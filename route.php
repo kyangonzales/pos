@@ -77,7 +77,6 @@ if (!isset($_POST['CheckOut'])): ?>
         die();
     }
 
-
     if (isset($_POST['CustomerRegister'])) {
         $response = $loginObj->registerCustomer(
             $_POST
@@ -130,10 +129,10 @@ if (!isset($_POST['CheckOut'])): ?>
         );
 
         if ($response['status'] == 'success') {
-
-            $_SESSION['reg_id'] = $response['message']['reg_id'];
-            $_SESSION['customerName'] = $response['message']['fname'] . ' ' . $response['message']['m_name'] . ' ' . $response['message']['lname'];
-            $_SESSION['user'] = 'user';
+                $response;
+             $_SESSION['reg_id'] = $response['message']['reg_id'];
+             $_SESSION['customerName'] = $response['message']['fname'] . ' ' . $response['message']['m_name'] . ' ' . $response['message']['lname'];
+             $_SESSION['user'] = 'user';
 
             url(
                 'success',
