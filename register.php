@@ -155,8 +155,9 @@ form .text h3 a:hover {
 					name="confirm_password">
 				<div id="password-error2" style="color: red; "></div>
 			</div>
-
-			<div class="input-box button mt-5">
+			<br>
+			<div id="passwordShort" style="color: red;"></div>
+			<div class="input-box button my-0">
 				<input type="hidden" name="CustomerRegister" value="CustomerRegister">
 				<!-- <button class="btn btn-success mr-3" id="submit-btn">Register</button> -->
 				<input type="submit" id="submit-btn" value="Register">
@@ -193,6 +194,13 @@ form .text h3 a:hover {
 			return false;
 		} else {
 			document.getElementById('password-error2').innerText = '';
+		}
+
+		if (password.length < 8) {
+			document.getElementById('passwordShort').innerText = 'Passwords is too short';
+			return false;
+		} else {
+			document.getElementById('passwordShort').innerText = '';
 		}
 
 		var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
