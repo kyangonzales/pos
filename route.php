@@ -19,17 +19,17 @@ if (isset($_GET['list_reviews']) && isset($_GET['menu_id'])) {
 
 if (!isset($_POST['CheckOut'])): ?>
 
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+    <head>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
 
-<body>
-	<?php endif; ?>
+    <body>
+    <?php endif; ?>
 
-	<?php
+    <?php
     session_start();
     require('./Class/TilesCounter.php');
     require('./Class/ParcelClient.php');
@@ -129,10 +129,10 @@ if (!isset($_POST['CheckOut'])): ?>
         );
 
         if ($response['status'] == 'success') {
-                $response;
-             $_SESSION['reg_id'] = $response['message']['reg_id'];
-             $_SESSION['customerName'] = $response['message']['fname'] . ' ' . $response['message']['m_name'] . ' ' . $response['message']['lname'];
-             $_SESSION['user'] = 'user';
+            $response;
+            $_SESSION['reg_id'] = $response['message']['reg_id'];
+            $_SESSION['customerName'] = $response['message']['fname'] . ' ' . $response['message']['m_name'] . ' ' . $response['message']['lname'];
+            $_SESSION['user'] = 'user';
 
             url(
                 'success',
@@ -594,9 +594,9 @@ if (!isset($_POST['CheckOut'])): ?>
                         <td>" . $row['price'] . "</td>
                         <td>" . $finalTotal . "</td>
                         <td>
-                            <a href=' route.php?removeQtySesssion=" . $SessionIndex . "' class='btn btn-danger'>
-                                <i class='fas fa-minus-square'></i>
-                            </a>
+                              <a href='#' onclick='confirmDelete(" . $SessionIndex . ")' class='btn btn-danger'>
+                <i class='fas fa-minus-square'></i>
+            </a>
                         </td>
                     </tr>
                 ";
@@ -619,10 +619,10 @@ if (!isset($_POST['CheckOut'])): ?>
     function showAllMenu()
     {
         global $menuObj;
-        $a = 0;
-        $b = 0;
-        $c = 0;
-        $d = 0;
+        $productIndex = 0;
+        $quantityInputIndex = 0;
+        $addButtonIndex = 0;
+        $minusButtonIndex = 0;
 
         foreach ($menuObj->getShowAllMenu() as $row) {
             $regId = isset($_SESSION['reg_id']) ? $_SESSION['reg_id'] : null;
@@ -630,255 +630,260 @@ if (!isset($_POST['CheckOut'])): ?>
             $disabled = $row['stocks'] == 0 ? "disabled" : '';
             $opacity = $row['stocks'] == 0 ? "opacity: 0.4" : '';
 
-
             $ratesTotal = $menuObj->totalRatingsPerProducts($row['menu_id']);
             $commentsTotal = $menuObj->totalCommentsPerProducts($row['menu_id']);
             $stocks = $row["stocks"];
+
             echo '
-                        <div id="prod" class="col-md-6 card">
-                            <div class="card-body">
-                                <b>Name</b>:' . $row['title'] . '<br>
-                                <b>Price</b>:' . $row['price'] . '<br>
-                                <b>Stocks</b>:' . $row['stocks'] . '
-                                <img style="width: 100%; height:80%; ' . $opacity . ';" src="' . $row['pic'] . '" class="rounded" />
-                                <center><h3 class="text-danger" style="
-                                    position: absolute;
-                                    top: 40%;
-                                    left: 25%;">' . $notavail . '</h3></center>
-                            </div>
-                            <div class="row card-footer"> 
-                                <div class="col-md-3">
-                                    <center>
-                                        <button ' . $disabled . ' type="button" id="btnMinus' . $a . '" class="btn btn-danger">-</button>
-                                    </center>
-                                </div>
-                                <div class="col-md-6">  
-                                <form action="route.php" method="post">
-                                    <input ' . $disabled . ' style="text-align:center;" name="qty" required id="input' . $b . '" value="' . (($stocks < 1) ? 0 : 1) . '"  class="form-control nonNegativeInput" type="number" min="0">
-                                </div>
-                                <div class="col-md-3">
-                                    <center>
-                                        <button ' . $disabled . ' type="button" id="btnAdd' . $c . '" class="btn btn-primary">+</button>
-                                    </center>
-                                </div>
-                            </div>
-                                <center>
-                                    <input type="hidden" required name="pic" value="' . $row['pic'] . '">
-                                    <input type="hidden" required name="menuId" value="' . $row['menu_id'] . '">
-                                    <input type="hidden" required name="categoryId" value="' . $row['cat_id'] . '">
-                                    <input type="hidden" required name="UserId" value="' . $regId . '">
-                                    <input type="hidden"  required name="AddCart" value="AddCart">
-                                    <button ' . $disabled . ' type="submit" class="btn btn-secondary m-3"><i class="fas fa-cart-plus mr-2"> </i>Add Cart</button>
-                                </center>
-                            </form>
-                            <hr>
-                            <p class="text-center">
-                                Product Ratings <span class="text-danger see-all-reviews" style="cursor:pointer;"  data-id="' . $row['menu_id'] . '">See All</span> <br>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <span class="text-danger">' . $ratesTotal . '</span> (' . $commentsTotal . ' Reviews)
-                            </p>
+                <div id="prod" class="col-md-6 card">
+                    <div class="card-body">
+                        <b>Name</b>: ' . $row['title'] . '<br>
+                        <b>Price</b>: ' . $row['price'] . '<br>
+                        <b>Stocks</b>: ' . $row['stocks'] . '
+                        <img style="width: 100%; height:80%; ' . $opacity . ';" src="' . $row['pic'] . '" class="rounded" />
+                        <center><h3 class="text-danger" style="position: absolute; top: 40%; left: 25%;">' . $notavail . '</h3></center>
+                    </div>
+                    <div class="row card-footer"> 
+                        <div class="col-md-3">
+                            <center>
+                                <button ' . $disabled . ' type="button" id="btnMinus' . $minusButtonIndex . '" class="btn btn-danger">-</button>
+                            </center>
                         </div>
-
-                        <script>
-                            let num' . $d . ' = 0;
-                            btnMinus' . $a . '.onclick = () => {
-                                if(num' . $d . ' != 1) {
-
-                                    document.querySelector("#input' . $b . '").value = --num' . $d . ';
-                                }
+                        <div class="col-md-6">  
+                            <form action="route.php" method="post">
+                                <input ' . $disabled . ' style="text-align:center;" name="qty" required id="input' . $quantityInputIndex . '" value="' . (($stocks < 1) ? 0 : 1) . '" class="form-control nonNegativeInput" type="number" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <center>
+                                <button ' . $disabled . ' type="button" id="btnAdd' . $addButtonIndex . '" class="btn btn-primary">+</button>
+                            </center>
+                        </div>
+                    </div>
+                    <center>
+                        <input type="hidden" required name="pic" value="' . $row['pic'] . '">
+                        <input type="hidden" required name="menuId" value="' . $row['menu_id'] . '">
+                        <input type="hidden" required name="categoryId" value="' . $row['cat_id'] . '">
+                        <input type="hidden" required name="UserId" value="' . $regId . '">
+                        <input type="hidden" required name="AddCart" value="AddCart">
+                        <button ' . $disabled . ' type="submit" class="btn btn-secondary m-3"><i class="fas fa-cart-plus mr-2"></i>Add Cart</button>
+                    </center>
+                    </form>
+                    <hr>
+                    <p class="text-center">
+                        Product Ratings <span class="text-danger see-all-reviews" style="cursor:pointer;" data-id="' . $row['menu_id'] . '">See All</span><br>
+                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                        <span class="text-danger">' . $ratesTotal . '</span> (' . $commentsTotal . ' Reviews)
+                    </p>
+                </div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    
+                <script>
+                    document.getElementById("input' . $quantityInputIndex . '").addEventListener("input", function() {
+                        const input = this;
+                        if (input.value < 1) {
+                            input.value = 1;
+                            toastr.warning("Quantity cannot be less than 1", "Warning");
+                        }
+                    });
+                    let quantity' . $productIndex . ' = parseInt(document.querySelector("#input' . $quantityInputIndex . '").value, 10);
+    
+                    btnMinus' . $minusButtonIndex . '.onclick = () => {
+                        if (quantity' . $productIndex . ' > 1) { 
+                            quantity' . $productIndex . '--;
+                            document.querySelector("#input' . $quantityInputIndex . '").value = quantity' . $productIndex . ';
+                        } else {
+                            toastr.warning("Quantity cannot be less than 1", "Warning"); 
+                        }
+                    };
+    
+                    btnAdd' . $addButtonIndex . '.onclick = () => {
+                        if (quantity' . $productIndex . ' < ' . $row['stocks'] . ') {
+                            quantity' . $productIndex . '++;
+                            document.querySelector("#input' . $quantityInputIndex . '").value = quantity' . $productIndex . ';
+                        } else {
+                            toastr.warning("Not enough stock for your order. The available quantity is ' . $row['stocks'] . '", "Warning");
+                        }
+                    };
+    
+                    document.querySelector("#input' . $quantityInputIndex . '").oninput = () => {
+                        let inputField = document.querySelector("#input' . $quantityInputIndex . '");
+                        let inputValue = parseInt(inputField.value, 10);
+                        let availableStock = ' . $row['stocks'] . ';
+    
+                        if (inputValue > availableStock) {
+                            toastr.warning("Not enough stock for your order. The available quantity is " + availableStock + ".", "Warning");
+                            inputField.value = availableStock;
+                        }
+                    };
+    
+                    document.getElementById("filesearch").addEventListener("keyup", function () {
+                        var searchTerm = this.value.toLowerCase();
+                        var cards = document.querySelectorAll("#prod");
+    
+                        cards.forEach(function (card) {
+                            var cardText = card.textContent.toLowerCase();
+                            if (cardText.indexOf(searchTerm) > -1) {
+                                card.style.display = "";
+                            } else {
+                                card.style.display = "none";
                             }
+                        });
+                    });
+                </script>
+            ';
 
-                            btnAdd' . $c . '.onclick = () => {
-                                document.querySelector("#input' . $b . '").value = ++num' . $d . ';
-                                
-                                if(' . $row['stocks'] . ' < 1){
-                                    alert("The item is currently out of stock with a quantity of ' . $row['stocks'] . '.");
-                                    document.querySelector("#input' . $b . '").value=0;
-                                }
-                                if(document.querySelector("#input' . $b . '").value > ' . $row['stocks'] . ') {
-                                    alert("Not enough stock for your order. The available quantity is ' . $row['stocks'] . ' .");
-                                    document.querySelector("#input' . $b . '").value=  ' . $row['stocks'] . ';
-                                }
-                            }
-                             document.querySelector("#input' . $b . '").oninput = () => {
-                                let inputField = document.querySelector("#input' . $b . '");
-                                let inputValue = parseInt(inputField.value, 10);
-                                let availableStock = ' . $row['stocks'] . ';
-
-                                if (inputValue > availableStock) {
-                                    alert("Not enough stock for your order. The available quantity is " + availableStock + ".");
-                                    inputField.value = availableStock;
-                                }
-                            }
-
-                             
-
-                            document.getElementById("filesearch").addEventListener("keyup", function () {
-                                var searchTerm = this.value.toLowerCase();
-
-
-                                
-                                var cards = document.querySelectorAll("#prod");
-
-                                cards.forEach(function (card) {
-                                    var cardText = card.textContent.toLowerCase();
-
-                                    if (cardText.indexOf(searchTerm) > -1) {
-                                        card.style.display = "";
-                                    } else {
-                                        card.style.display = "none";
-                                    }
-                                });
-                            });
-                        </script>
-                        
-                    ';
-
-            $a++;
-            $b++;
-            $c++;
-            $d++;
+            $productIndex++;
+            $quantityInputIndex++;
+            $addButtonIndex++;
+            $minusButtonIndex++;
         }
     }
 
-    function showFoodMenu($cat_id)
+
+    function showFoodMenu($categoryId)
     {
         global $menuObj;
-        $a = 0;
-        $b = 0;
-        $c = 0;
-        $d = 0;
+        $buttonMinusIndex = 0;
+        $inputIndex = 0;
+        $buttonPlusIndex = 0;
+        $quantityIndex = 0;
 
-        $counting = isset($menuObj->getShowMenu($cat_id)[0]) ? $menuObj->getShowMenu($cat_id)[0] : 0;
+        $menuCount = isset($menuObj->getShowMenu($categoryId)[0]) ? $menuObj->getShowMenu($categoryId)[0] : 0;
 
-        if ($counting == 0) {
-
+        if ($menuCount == 0) {
             echo "<p>Loading...</p>";
         } else {
-
-            foreach ($menuObj->getShowMenu($cat_id) as $row) {
-
+            foreach ($menuObj->getShowMenu($categoryId) as $menuItem) {
                 $regId = isset($_SESSION['reg_id']) ? $_SESSION['reg_id'] : null;
-                $notavail = $row['stocks'] == 0 ? "Not Available" : '';
-                $disabled = $row['stocks'] == 0 ? "disabled" : '';
-                $opacity = $row['stocks'] == 0 ? "opacity: 0.4" : '';
-                $ratesTotal = $menuObj->totalRatingsPerProducts($row['menu_id']);
-                $commentsTotal = $menuObj->totalCommentsPerProducts($row['menu_id']);
-                $stocks = $row["stocks"];
+                $notAvailableMessage = $menuItem['stocks'] == 0 ? "Not Available" : '';
+                $buttonDisabled = $menuItem['stocks'] == 0 ? "disabled" : '';
+                $imageOpacity = $menuItem['stocks'] == 0 ? "opacity: 0.4" : '';
+                $totalRatings = $menuObj->totalRatingsPerProducts($menuItem['menu_id']);
+                $totalComments = $menuObj->totalCommentsPerProducts($menuItem['menu_id']);
+                $stockQuantity = $menuItem["stocks"];
 
                 echo '
-                        <div id="prod" class="col-md-6 card">
-                            <div class="card-body">
-                                <b>Name</b>:' . $row['title'] . '<br>
-                                <b>Price</b>:' . $row['price'] . '<br>
-                                <b>Stocks</b>:' . $row['stocks'] . '
-                                <img style="width: 100%; height:80%; ' . $opacity . ';" src="' . $row['pic'] . '" class="rounded" />
-                                <center><h3 class="text-danger" style="
-                                    position: absolute;
-                                    top: 40%;
-                                    left: 25%;">' . $notavail . '</h3></center>
-                            </div>
-                            <div class="row card-footer"> 
-                                <div class="col-md-3">
-                                    <center>
-                                        <button ' . $disabled . ' type="button" id="btnMinus' . $a . '" class="btn btn-danger">-</button>
-                                    </center>
-                                </div>
-                                <div class="col-md-6">  
-                                <form action="route.php" method="post">
-                                    <input ' . $disabled . ' style="text-align:center;" name="qty" required id="input' . $b . '" value="' . (($stocks < 1) ? 0 : 1) . '"  class="form-control nonNegativeInput" type="number" min="0">
-                                </div>
-                                <div class="col-md-3">
-                                    <center>
-                                        <button ' . $disabled . ' type="button" id="btnAdd' . $c . '" class="btn btn-primary">+</button>
-                                    </center>
-                                </div>
-                            </div>
-                                <center>
-                                    <input type="hidden" required name="pic" value="' . $row['pic'] . '">
-                                    <input type="hidden" required name="menuId" value="' . $row['menu_id'] . '">
-                                    <input type="hidden" required name="categoryId" value="' . $row['cat_id'] . '">
-                                    <input type="hidden" required name="UserId" value="' . $regId . '">
-                                    <input type="hidden"  required name="AddCart" value="AddCart">
-                                    <button ' . $disabled . ' type="submit" class="btn btn-secondary m-3"><i class="fas fa-cart-plus mr-2"> </i>Add Cart</button>
-                                </center>
-                            </form>
-                            <hr>
-                            <p class="text-center">
-                                Product Ratings <span class="text-danger see-all-reviews" style="cursor:pointer;" data-id="' . $row['menu_id'] . '">See All</span> <br>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                                <span class="text-danger">' . $ratesTotal . '</span> (' . $commentsTotal . ' Reviews)
-                            </p>
+                    <div id="prod" class="col-md-6 card">
+                        <div class="card-body">
+                            <b>Name</b>: ' . $menuItem['title'] . '<br>
+                            <b>Price</b>: ' . $menuItem['price'] . '<br>
+                            <b>Stocks</b>: ' . $menuItem['stocks'] . '
+                            <img style="width: 100%; height:80%; ' . $imageOpacity . ';" src="' . $menuItem['pic'] . '" class="rounded" />
+                            <center><h3 class="text-danger" style="position: absolute; top: 40%; left: 25%;">' . $notAvailableMessage . '</h3></center>
                         </div>
-
-                        <script>
-                            let num' . $d . ' = 0;
+                        <div class="row card-footer"> 
+                            <div class="col-md-3">
+                                <center>
+                                    <button ' . $buttonDisabled . ' type="button" id="btnMinus' . $buttonMinusIndex . '" class="btn btn-danger">-</button>
+                                </center>
+                            </div>
+                            <div class="col-md-6">  
+                                <form action="route.php" method="post">
+                                    <input ' . $buttonDisabled . ' style="text-align:center;" name="qty" required id="input' . $inputIndex . '" value="' . (($stockQuantity < 1) ? 0 : 1) . '"  class="form-control nonNegativeInput" type="number" min="1">
+                            </div>
+                            <div class="col-md-3">
+                                <center>
+                                    <button ' . $buttonDisabled . ' type="button" id="btnAdd' . $buttonPlusIndex . '" class="btn btn-primary">+</button>
+                                </center>
+                            </div>
+                        </div>
+                        <center>
+                            <input type="hidden" required name="pic" value="' . $menuItem['pic'] . '">
+                            <input type="hidden" required name="menuId" value="' . $menuItem['menu_id'] . '">
+                            <input type="hidden" required name="categoryId" value="' . $menuItem['cat_id'] . '">
+                            <input type="hidden" required name="UserId" value="' . $regId . '">
+                            <input type="hidden" required name="AddCart" value="AddCart">
+                            <button ' . $buttonDisabled . ' type="submit" class="btn btn-secondary m-3"><i class="fas fa-cart-plus mr-2"></i>Add Cart</button>
+                        </center>
+                        </form>
+                        <hr>
+                        <p class="text-center">
+                            Product Ratings <span class="text-danger see-all-reviews" style="cursor:pointer;" data-id="' . $menuItem['menu_id'] . '">See All</span><br>
+                            <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                            <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                            <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                            <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                            <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                            <span class="text-danger">' . $totalRatings . '</span> (' . $totalComments . ' Reviews)
+                        </p>
+                    </div>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
         
-                            btnMinus' . $a . '.onclick = () => {
-                                if(num' . $d . ' != 0) {
-
-                                    document.querySelector("#input' . $b . '").value = num' . $d . '--;
-                                }
+                    <script>
+                        let quantity' . $quantityIndex . ' = ' . (($stockQuantity < 1) ? 0 : 1) . '; // Set initial quantity
+                        
+                        document.querySelector("#input' . $inputIndex . '").addEventListener("input", function() {
+                            const input = this;
+                            if (input.value < 1) {
+                                input.value = 1;
+                                toastr.warning("Quantity cannot be less than 1", "Warning");
                             }
-                            btnAdd' . $c . '.onclick = () => {
-                                document.querySelector("#input' . $b . '").value =num' . $d . '++;
-                                
-                                if(' . $row['stocks'] . ' < 1){
-                                    alert("The item is currently out of stock with a quantity of ' . $row['stocks'] . '.");
-                                    document.querySelector("#input' . $b . '").value=0;
-                                }
-                                if(document.querySelector("#input' . $b . '").value > ' . $row['stocks'] . ') {
-                                    alert("Not enough stock for your order. The available quantity is ' . $row['stocks'] . ' .");
-                                    document.querySelector("#input' . $b . '").value=  ' . $row['stocks'] . ';
-                                }
+                            quantity' . $quantityIndex . ' = parseInt(input.value, 10); // Update quantity variable
+                        });
+    
+                        document.getElementById("btnMinus' . $buttonMinusIndex . '").onclick = () => {
+                            if (quantity' . $quantityIndex . ' > 1) { 
+                                quantity' . $quantityIndex . '--;
+                                document.querySelector("#input' . $inputIndex . '").value = quantity' . $quantityIndex . ';
+                            } else {
+                                toastr.warning("Quantity cannot be less than 1", "Warning"); 
                             }
-                             document.querySelector("#input' . $b . '").oninput = () => {
-                                let inputField = document.querySelector("#input' . $b . '");
-                                let inputValue = parseInt(inputField.value, 10);
-                                let availableStock = ' . $row['stocks'] . ';
-
-                                if (inputValue > availableStock) {
-                                    alert("Not enough stock for your order. The available quantity is " + availableStock + ".");
-                                    inputField.value = availableStock;
-                                }
+                        };
+    
+                        document.getElementById("btnAdd' . $buttonPlusIndex . '").onclick = () => {
+                            if (quantity' . $quantityIndex . ' < ' . $menuItem['stocks'] . ') {
+                                quantity' . $quantityIndex . '++;
+                                document.querySelector("#input' . $inputIndex . '").value = quantity' . $quantityIndex . ';
+                            } else {
+                                toastr.error("Not enough stock for your order. The available quantity is ' . $menuItem['stocks'] . '.", "Error");
                             }
-
-
-                            document.getElementById("filesearch").addEventListener("keyup", function () {
-                                var searchTerm = this.value.toLowerCase();
-
-
-                                
-                                var cards = document.querySelectorAll("#prod");
-
-                                cards.forEach(function (card) {
-                                    var cardText = card.textContent.toLowerCase();
-
-                                    if (cardText.indexOf(searchTerm) > -1) {
-                                        card.style.display = "";
-                                    } else {
-                                        card.style.display = "none";
-                                    }
-                                });
+                        };
+    
+                        document.querySelector("#input' . $inputIndex . '").oninput = () => {
+                            let inputField = document.querySelector("#input' . $inputIndex . '");
+                            let inputValue = parseInt(inputField.value, 10);
+                            let availableStock = ' . $menuItem['stocks'] . ';
+    
+                            if (inputValue > availableStock) {
+                                toastr.error("Not enough stock for your order. The available quantity is " + availableStock + ".", "Error");
+                                inputField.value = availableStock;
+                            }
+                        };
+    
+                        document.getElementById("filesearch").addEventListener("keyup", function () {
+                            var searchTerm = this.value.toLowerCase();
+                            var cards = document.querySelectorAll("#prod");
+    
+                            cards.forEach(function (card) {
+                                var cardText = card.textContent.toLowerCase();
+                                if (cardText.indexOf(searchTerm) > -1) {
+                                    card.style.display = "";
+                                } else {
+                                    card.style.display = "none";
+                                }
                             });
-                        </script>
-                    ';
+                        });
+                    </script>
+                ';
 
-                $a++;
-                $b++;
-                $c++;
-                $d++;
+                $buttonMinusIndex++;
+                $inputIndex++;
+                $buttonPlusIndex++;
+                $quantityIndex++;
             }
         }
     }
+
+
+
 
     function getAdminProfile($adminId)
     {
@@ -946,8 +951,8 @@ if (!isset($_POST['CheckOut'])): ?>
                         <td>$row[cat_title]</td>
                         <td>
                             <center>
-                                <button onclick=removeFoodCategory(" . $row['cat_id'] . ") class='btn btn-danger'> <i class='fas fa-trash'></i> Remove</button>
-                                <button onclick='prepareUpdate({$row['cat_id']}, \"{$row['cat_title']}\") ' class='btn btn-warning'> <i class='far fa-edit'></i> Edit</button>
+                                <button onclick=removeFoodCategory(" . $row['cat_id'] . ") class='btn btn-danger'> <i class='fas fa-trash'></i> </button>
+                                <button onclick='prepareUpdate({$row['cat_id']}, \"{$row['cat_title']}\") ' class='btn btn-warning'> <i class='far fa-edit'></i></button>
                             </center>
                         </td>
                     </tr>
@@ -993,7 +998,7 @@ if (!isset($_POST['CheckOut'])): ?>
                         <td>$date</td>
                         <td>
                             <center>
-                                <button onclick=removeReview(" . $row['rate_id'] . ") class='btn btn-danger'> <i class='fas fa-trash'></i> Remove</button>
+                                <button onclick=removeReview(" . $row['rate_id'] . ") class='btn btn-danger'> <i class='fas fa-trash'></i> </button>
                             </center>
                         </td>
                     </tr>
@@ -1048,8 +1053,8 @@ if (!isset($_POST['CheckOut'])): ?>
                         <td>$row[stocks]</td>
                         <td>
                             <center>
-                                <button onclick=removeFoodMenu(" . $row['menu_id'] . ") class='btn btn-danger btn-sm w-100 mb-2'> <span class='fas fa-trash'></span>Remove</button>
-                                <button onclick='prepareUpdateProd({$row['menu_id']},\"{$row['pic']}\", \"{$row['cat_id']}\", \"{$row['title']}\", \"{$row['description']}\", \"{$row['price']}\", \"{$row['stocks']}\") ' class='btn btn-warning btn-sm w-100 mb-2'> <span class='far fa-edit'></span> Edit</button>
+                                <button onclick=removeFoodMenu(" . $row['menu_id'] . ") class='btn btn-danger btn-sm'> <span class='fas fa-trash'></span></button>
+                                <button onclick='prepareUpdateProd({$row['menu_id']},\"{$row['pic']}\", \"{$row['cat_id']}\", \"{$row['title']}\", \"{$row['description']}\", \"{$row['price']}\", \"{$row['stocks']}\") ' class='btn btn-warning btn-sm'> <span class='far fa-edit'></span></button>
                             </center>
                         </td>
                     </tr>
@@ -1096,19 +1101,19 @@ if (!isset($_POST['CheckOut'])): ?>
     {
         global $parcelObj;
 
-
         foreach ($parcelObj->getParcelClients() as $row) {
             $orderDate = $row['order_date'];
 
             $date = new DateTime($orderDate);
 
             $date = $date->format('F j, Y');
+            $formattedName = formatName($row['fname'] . ' ' . $row['m_name'] . ' ' . $row['lname']);
 
             echo "
                     <tr>
-                        <td>$row[menu_id]</td>
+                        <td>$row[title]</td>
                         <td>$row[userCode]</td>
-                        <td>$row[fname] $row[m_name] $row[lname]</td>
+                        <td>$formattedName</td>
                         <td>$date</td>
                         <td>
                         <a href='viewParcel.php?userId={$row['reg_id']}&checkoutId={$row['checkout_id']}' style='color: white;' class='btn btn-primary'> <i class='fas fa-eye'></i> View</a>
@@ -1171,7 +1176,10 @@ if (!isset($_POST['CheckOut'])): ?>
         $parcelObj->updateNotif($ckid);
     }
 
-
+    function formatName($name)
+    {
+        return ucwords(strtolower($name));
+    }
 
     function viewClientOrders()
     {
@@ -1201,9 +1209,10 @@ if (!isset($_POST['CheckOut'])): ?>
                 $status = '<span class="badge bg-success text-white">RECIEVED</span>'; //3
             }
 
+
             echo "
             <tr>
-                <td>{$row['fname']} {$row['m_name']} {$row['lname']}</td>
+                <td>" . formatName($row['fname'] . ' ' . $row['m_name'] . ' ' . $row['lname']) . "</td>
                 <td>$date</td>
                 <td>{$row['payment_method']}</td>
                 <td>$status</td>
@@ -1483,14 +1492,14 @@ if (!isset($_POST['CheckOut'])): ?>
                            
             
             ";
-        if ($result[0]['status_order'] == 3) {
-            echo "
-                    <a href='#' class='btn btn-info mt-2'>
-                        <i class='fas fa-print'></i> Print Receipt
-                    </a>
-                ";
-        }
-
+        // if ($result[0]['status_order'] == 3) {
+        //     echo "
+        //             <a href='#' class='btn btn-info mt-2'>
+        //                 <i class='fas fa-print'></i> Print Receipt
+        //             </a>
+        //         ";
+        // }
+    
     }
 
     ?>
