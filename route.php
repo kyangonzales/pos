@@ -1,3 +1,34 @@
+<!-- global-scripts.php -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<!-- na oooveride ni bootstrap yung sa toastr kaya nilagay kong ganyan -->
+<style>
+.toast-success {
+	background-color: #28a745 !important;
+	color: #ffffff !important;
+}
+
+.toast-error {
+	background-color: #dc3545 !important;
+	color: #ffffff !important;
+}
+
+.toast-info {
+	background-color: #17a2b8 !important;
+	color: #ffffff !important;
+}
+
+.toast-warning {
+	background-color: #ffc107 !important;
+	color: #333333 !important;
+}
+
+.toast {
+	padding: 10px 20px;
+}
+</style>
 <?php
 require('./Class/Db.php');
 require('./Class/Rates.php');
@@ -19,17 +50,17 @@ if (isset($_GET['list_reviews']) && isset($_GET['menu_id'])) {
 
 if (!isset($_POST['CheckOut'])): ?>
 
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </head>
+<head>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 
-    <body>
-    <?php endif; ?>
+<body>
+	<?php endif; ?>
 
-    <?php
+	<?php
     session_start();
     require('./Class/TilesCounter.php');
     require('./Class/ParcelClient.php');
@@ -640,7 +671,9 @@ if (!isset($_POST['CheckOut'])): ?>
                         <b>Name</b>: ' . $row['title'] . '<br>
                         <b>Price</b>: ' . $row['price'] . '<br>
                         <b>Stocks</b>: ' . $row['stocks'] . '
-                        <img style="width: 100%; height:80%; ' . $opacity . ';" src="' . $row['pic'] . '" class="rounded" />
+                         <div style="height: auto; max-width: 300px; margin-top: 1rem;" class="d-flex justify-content-center">
+                            <img src="' . $row['pic'] . '" style="width: auto; height: auto; ' . $opacity . ';" class="rounded" />
+                        </div>
                         <center><h3 class="text-danger" style="position: absolute; top: 40%; left: 25%;">' . $notavail . '</h3></center>
                     </div>
                     <div class="row card-footer"> 
@@ -669,19 +702,17 @@ if (!isset($_POST['CheckOut'])): ?>
                     </center>
                     </form>
                     <hr>
-                    <p class="text-center">
-                        Product Ratings <span class="text-danger see-all-reviews" style="cursor:pointer;" data-id="' . $row['menu_id'] . '">See All</span><br>
-                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                        <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
-                        <span class="text-danger">' . $ratesTotal . '</span> (' . $commentsTotal . ' Reviews)
-                    </p>
+                   <p class="text-center">
+                                Product Ratings <span class="text-danger see-all-reviews" style="cursor:pointer;" data-id="' . $row['menu_id'] . '">See All</span> <br>
+                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                                <i class="fa-solid fa-star" style="color:#FFEB3B"></i>
+                                <span class="text-danger">' . $ratesTotal . '</span> (' . $commentsTotal . ' Reviews)
+                            </p>
                 </div>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
     
                 <script>
                     document.getElementById("input' . $quantityInputIndex . '").addEventListener("input", function() {
@@ -774,7 +805,9 @@ if (!isset($_POST['CheckOut'])): ?>
                             <b>Name</b>: ' . $menuItem['title'] . '<br>
                             <b>Price</b>: ' . $menuItem['price'] . '<br>
                             <b>Stocks</b>: ' . $menuItem['stocks'] . '
-                            <img style="width: 100%; height:80%; ' . $imageOpacity . ';" src="' . $menuItem['pic'] . '" class="rounded" />
+                             <div style="height: auto; max-width: 300px; margin-top: 1rem;" class="d-flex justify-content-center">
+                            <img src="' . $menuItem['pic'] . '" style="width: auto; height: auto; ' . $imageOpacity . ';" class="rounded" />
+                        </div>
                             <center><h3 class="text-danger" style="position: absolute; top: 40%; left: 25%;">' . $notAvailableMessage . '</h3></center>
                         </div>
                         <div class="row card-footer"> 
@@ -813,10 +846,7 @@ if (!isset($_POST['CheckOut'])): ?>
                             <span class="text-danger">' . $totalRatings . '</span> (' . $totalComments . ' Reviews)
                         </p>
                     </div>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-        
+
                     <script>
                         let quantity' . $quantityIndex . ' = ' . (($stockQuantity < 1) ? 0 : 1) . '; // Set initial quantity
                         

@@ -203,15 +203,15 @@ form .text h3 a:hover {
 			document.getElementById('passwordShort').innerText = '';
 		}
 
-		var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Invalid email address!',
-				text: 'Please enter a valid email address.',
-			});
-			return false;
-		}
+		// var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		// if (!emailRegex.test(email)) {
+		// 	Swal.fire({
+		// 		icon: 'error',
+		// 		title: 'Invalid email address!',
+		// 		text: 'Please enter a valid email address.',
+		// 	});
+		// 	return false;
+		// }
 
 		fetch('./proces/check_email.php', {
 				method: 'POST',
@@ -283,7 +283,7 @@ form .text h3 a:hover {
 					title: 'Error',
 					text: 'An error occurred while registering.',
 				});
-				return false; // Error occurred
+				return false;
 			});
 	}
 	</script>

@@ -19,7 +19,7 @@
 		}
 
 		.overflo-box {
-			overflow-y: auto;
+			overflow-x: hidden;
 			max-height: 86vh;
 		}
 
