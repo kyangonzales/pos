@@ -54,11 +54,11 @@ if (!isset($_POST['CheckOut'])): ?>
 <html lang="en">
 
 <head>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-	<?php endif; ?>
+    <?php endif; ?>
 
 	<?php
     session_start();
@@ -162,6 +162,7 @@ if (!isset($_POST['CheckOut'])): ?>
         if ($response['status'] == 'success') {
             $response;
             $_SESSION['reg_id'] = $response['message']['reg_id'];
+            $_SESSION['customerID']=$response['message']['reg_id'];
             $_SESSION['customerName'] = $response['message']['fname'] . ' ' . $response['message']['m_name'] . ' ' . $response['message']['lname'];
             $_SESSION['user'] = 'user';
 
@@ -648,14 +649,41 @@ if (!isset($_POST['CheckOut'])): ?>
     }
 
     function showAllMenu()
-    {
+    {   
         global $menuObj;
+        $itemsPerPage = 10;
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        $collections = $menuObj->getShowAllMenu();
+        $menuItems = array_slice($menuObj->getShowAllMenu(), $offset, $itemsPerPage);
         $productIndex = 0;
         $quantityInputIndex = 0;
         $addButtonIndex = 0;
         $minusButtonIndex = 0;
 
-        foreach ($menuObj->getShowAllMenu() as $row) {
+
+        $collectionsJson = json_encode($collections);
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var collections = $collectionsJson;
+                const itemsPerPage = $itemsPerPage;
+                const totalButtons = Math.ceil(collections.length / itemsPerPage);
+                const paginationDiv = document.getElementById('pagination');
+                
+                let paginationHtml = '<div class=\"btn-group\" role=\"group\">'; // Start button group
+                for (let i = 1; i <= totalButtons; i++) {
+                    const activeClass = i === $currentPage ? 'active' : '';
+                    paginationHtml += '<button class=\"btn btn-light ' + activeClass + '\" onclick=\"location.href=\'?page=' + i + '\'\">' + i + '</button>'; // Button instead of link
+                }
+                paginationHtml += '</div>'; 
+                
+                paginationDiv.innerHTML = paginationHtml;
+            });
+        </script>
+        ";
+
+        foreach ($menuItems as $row) {
             $regId = isset($_SESSION['reg_id']) ? $_SESSION['reg_id'] : null;
             $notavail = $row['stocks'] == 0 ? "Not Available" : '';
             $disabled = $row['stocks'] == 0 ? "disabled" : '';
@@ -666,7 +694,7 @@ if (!isset($_POST['CheckOut'])): ?>
             $stocks = $row["stocks"];
 
             echo '
-                <div id="prod" class="col-md-6 card">
+                <div id="prod" class="col-md-6 card" data-name="' . $row['title'] . '">
                     <div class="card-body">
                         <b>Name</b>: ' . $row['title'] . '<br>
                         <b>Price</b>: ' . $row['price'] . '<br>
@@ -715,6 +743,8 @@ if (!isset($_POST['CheckOut'])): ?>
 
     
                 <script>
+
+                
                     document.getElementById("input' . $quantityInputIndex . '").addEventListener("input", function() {
                         const input = this;
                         if (input.value < 1) {
@@ -758,7 +788,7 @@ if (!isset($_POST['CheckOut'])): ?>
                         var cards = document.querySelectorAll("#prod");
     
                         cards.forEach(function (card) {
-                            var cardText = card.textContent.toLowerCase();
+                            var cardText = card.getAttribute("data-name").toLowerCase()
                             if (cardText.indexOf(searchTerm) > -1) {
                                 card.style.display = "";
                             } else {
@@ -780,17 +810,46 @@ if (!isset($_POST['CheckOut'])): ?>
     function showFoodMenu($categoryId)
     {
         global $menuObj;
+
+      
+        $itemsPerPage = 5;
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        $collections =$menuObj->getShowMenu($categoryId);
+        $menuItems = array_slice( $collections, $offset, $itemsPerPage);
         $buttonMinusIndex = 0;
         $inputIndex = 0;
         $buttonPlusIndex = 0;
         $quantityIndex = 0;
 
-        $menuCount = isset($menuObj->getShowMenu($categoryId)[0]) ? $menuObj->getShowMenu($categoryId)[0] : 0;
+        $collectionsJson = json_encode($collections);
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var collections = $collectionsJson;
+                const itemsPerPage = $itemsPerPage;
+                const totalButtons = Math.ceil(collections.length / itemsPerPage);
+                const paginationDiv = document.getElementById('pagination');
+                
+                let paginationHtml = '<div class=\"btn-group\" role=\"group\">'; 
+                for (let i = 1; i <= totalButtons; i++) {
+                    const activeClass = i === $currentPage ? 'active' : '';
+                  paginationHtml += '<button class=\"btn btn-light ' + activeClass + '\" onclick=\"location.href=\'?page=' + i + ($categoryId ? '&catId=' + $categoryId : '') + '\'\">' + i + '</button>';
+                }
+                paginationHtml += '</div>'; 
+                
+                paginationDiv.innerHTML = paginationHtml;
+            });
+        </script>
+        ";
 
+
+        $menuCount = isset($menuObj->getShowMenu($categoryId)[0]) ? $menuObj->getShowMenu($categoryId)[0] : 0;
+     
         if ($menuCount == 0) {
             echo "<p>Loading...</p>";
         } else {
-            foreach ($menuObj->getShowMenu($categoryId) as $menuItem) {
+            foreach ($menuItems as $menuItem) {
                 $regId = isset($_SESSION['reg_id']) ? $_SESSION['reg_id'] : null;
                 $notAvailableMessage = $menuItem['stocks'] == 0 ? "Not Available" : '';
                 $buttonDisabled = $menuItem['stocks'] == 0 ? "disabled" : '';
@@ -800,7 +859,7 @@ if (!isset($_POST['CheckOut'])): ?>
                 $stockQuantity = $menuItem["stocks"];
 
                 echo '
-                    <div id="prod" class="col-md-6 card">
+                    <div id="prod" class="col-md-6 card" data-name="' . $menuItem['title'] . '">
                         <div class="card-body">
                             <b>Name</b>: ' . $menuItem['title'] . '<br>
                             <b>Price</b>: ' . $menuItem['price'] . '<br>
@@ -891,9 +950,9 @@ if (!isset($_POST['CheckOut'])): ?>
                         document.getElementById("filesearch").addEventListener("keyup", function () {
                             var searchTerm = this.value.toLowerCase();
                             var cards = document.querySelectorAll("#prod");
-    
                             cards.forEach(function (card) {
-                                var cardText = card.textContent.toLowerCase();
+                               cardText= card.getAttribute("data-name").toLowerCase()
+                               console.log(cardText)
                                 if (cardText.indexOf(searchTerm) > -1) {
                                     card.style.display = "";
                                 } else {
@@ -902,7 +961,10 @@ if (!isset($_POST['CheckOut'])): ?>
                             });
                         });
                     </script>
+
+
                 ';
+
 
                 $buttonMinusIndex++;
                 $inputIndex++;
@@ -1157,13 +1219,14 @@ if (!isset($_POST['CheckOut'])): ?>
     {
         global $parcelObj;
 
-
-        $notifications = $parcelObj->getNotifications();
+        $customerID=$_SESSION['customerID'];
+         
+        
+        $notifications = $parcelObj->getNotifications($customerID); 
         $rowCount = count($notifications);
         if ($rowCount === 0) {
             echo "";
         } else {
-
             echo $rowCount;
         }
 
@@ -1172,7 +1235,9 @@ if (!isset($_POST['CheckOut'])): ?>
     function getNotificationContent()
     {
         global $parcelObj;
-        $notifContent = $parcelObj->getNotificationContent();
+        $customerID=$_SESSION['customerID'];
+
+        $notifContent = $parcelObj->getNotificationContent($customerID);
         $rowCount = count($notifContent);
 
         if ($rowCount === 0) {
@@ -1187,7 +1252,7 @@ if (!isset($_POST['CheckOut'])): ?>
                 // echo '<a class="dropdown-item" href="viewParcelClient.php?userId=' . urlencode($row["reg_id"]) . '&checkoutId=' . urlencode($row["checkout_id"]) . '" style="' . $bgColor . '" onclick="alert(\'' . updateNotif($ckid) . '\'); return true;">'
                 //     . 'Your order was delivered. <strong style="color: blue;">View Order</strong></a>';
                 echo '<a class="dropdown-item" href="viewParcelClient.php?userId=' . urlencode($row["reg_id"]) . '&checkoutId=' . urlencode($row["checkout_id"]) . '&action=2" style="' . $bgColor . '" ); return true;">'
-                    . 'Your order was delivered. <strong style="color: blue;">View Order</strong></a>';
+                    . 'Your order  delivered. <strong style="color: blue;">View Order</strong></a>';
 
 
             }
