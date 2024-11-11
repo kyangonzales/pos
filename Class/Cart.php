@@ -111,7 +111,8 @@ class Cart extends Db
                     "phone"        => $data['phonenum'],
                     "address"      => $data['address'],
                     "payment_method" => $data['paymenttype'],
-                    "proof_gcpayment" => $file
+                    "proof_gcpayment" => $file,
+                 
                 ]);
 
                 $this->stocksItem($row['menuId'], $row['qty']);

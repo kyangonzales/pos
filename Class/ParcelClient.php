@@ -109,14 +109,16 @@
                     'checkout_id' => $checkoutId
                 ]);
 
-                $arr = array();
+                $arr=[];
 
                 while($result = $stmt->fetch(PDO::FETCH_ASSOC)
                 ) {
-                    $arr[] = $result;
+                    $arr = $result;
                 }
 
                 return $arr;
+
+                
                 
             } catch (Exception $e) {
                 return $e->getMessage();
