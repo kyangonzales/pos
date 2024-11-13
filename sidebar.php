@@ -40,9 +40,9 @@
     <ul class="list-unstyled components">
         <center>
             <img style="border-radius: 50%;"
-                src="<?php echo isset($_SESSION['gender']) && $_SESSION['gender'] == 'Male' ? 'https://png.pngtree.com/png-vector/20190321/ourmid/pngtree-vector-users-icon-png-image_856952.jpg' : 'https://t4.ftcdn.net/jpg/01/24/46/81/500_F_124468197_bTywsXbEFgpuO7OmN8UrjgpyaKckqg7H.jpg';?>"
+                src="<?php echo isset($_SESSION['gender']) && $_SESSION['gender'] == 'Male' ? 'https://png.pngtree.com/png-vector/20190321/ourmid/pngtree-vector-users-icon-png-image_856952.jpg' : 'https://t4.ftcdn.net/jpg/01/24/46/81/500_F_124468197_bTywsXbEFgpuO7OmN8UrjgpyaKckqg7H.jpg'; ?>"
                 width="95" height="90" alt="avatar">
-            <p><?php echo isset($_SESSION['name']) ? $_SESSION['name'] : '';?><br>Admin</p>
+            <p><?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ''; ?><br>Admin</p>
         </center>
         <li>
             <a href="admin.php"><i class="fas fa-home mr-2"></i>Home</a>
@@ -59,7 +59,12 @@
         <li>
             <a href="review.php"><i class="fas fa-comment mr-2"></i>Reviews</a>
         </li>
+        <li>
+            <a href="paymentMethod.php">
+                <i class="fas fa-credit-card"></i> Payment Method
+            </a>
+        </li>
     </ul>
 </nav>
 
-<?php  include('Modal/profile_modal.php'); ?>
+<?php include('Modal/profile_modal.php'); ?>
